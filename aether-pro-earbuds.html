@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aether Pro — Wireless Noise-Cancelling Earbuds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F6F3;
+    --panel:#FFFFFF;
+    --ink:#15181C;
+    --muted:#6B7076;
+    --line:rgba(21,24,28,0.12);
+    --signal:#2F5CFF;
+    --signal-dim:#E7ECFF;
+    --copper:#C97A4A;
+    --ok:#2E8B57;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Inter', sans-serif;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Space Grotesk', sans-serif; letter-spacing:-0.01em;}
+  .mono{font-family:'JetBrains Mono', monospace;}
+  a{color:inherit; text-decoration:none;}
+  img{display:block; max-width:100%;}
+  button{font-family:inherit; cursor:pointer;}
+  .wrap{max-width:1200px; margin:0 auto; padding:0 32px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.16em;
+    text-transform:uppercase; color:var(--signal); display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:20px; height:1px; background:var(--signal); display:inline-block;}
+
+  /* NAV */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    background:rgba(245,246,243,0.88); backdrop-filter:blur(10px);
+    border-bottom:1px solid transparent; transition:border-color .3s ease;
+  }
+  header.scrolled{border-color:var(--line);}
+  nav{display:flex; align-items:center; justify-content:space-between; padding:20px 0;}
+  .logo{font-family:'Space Grotesk', sans-serif; font-size:19px; font-weight:700; display:flex; align-items:center; gap:8px;}
+  .logo .dot{width:8px; height:8px; border-radius:50%; background:var(--signal);}
+  .nav-links{display:flex; gap:34px; list-style:none;}
+  .nav-links a{font-size:13.5px; color:var(--muted); transition:color .2s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-right{display:flex; align-items:center; gap:20px;}
+  .nav-price{font-family:'JetBrains Mono', monospace; font-size:13px;}
+  .nav-cta{
+    background:var(--ink); color:#fff; padding:10px 22px; border-radius:3px;
+    font-size:13px; border:1px solid var(--ink); transition:all .2s ease;
+  }
+  .nav-cta:hover{background:transparent; color:var(--ink);}
+  .burger{display:none; flex-direction:column; gap:5px; background:none; border:none;}
+  .burger span{width:22px; height:2px; background:var(--ink);}
+
+  /* HERO */
+  .hero{padding:150px 0 100px; position:relative;}
+  .hero .wrap{display:grid; grid-template-columns:0.95fr 1.05fr; gap:50px; align-items:center;}
+  .hero h1{font-size:clamp(38px,5vw,58px); line-height:1.02; margin:20px 0 22px;}
+  .hero h1 span{color:var(--signal);}
+  .hero p.lede{font-size:16px; color:var(--muted); max-width:420px; margin-bottom:32px;}
+  .price-row{display:flex; align-items:baseline; gap:14px; margin-bottom:34px;}
+  .price-now{font-family:'JetBrains Mono', monospace; font-size:32px; font-weight:500;}
+  .price-was{font-family:'JetBrains Mono', monospace; font-size:16px; color:var(--muted); text-decoration:line-through;}
+  .save-tag{
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ok);
+    background:rgba(46,139,87,0.1); padding:4px 9px; border-radius:3px;
+  }
+  .hero-actions{display:flex; gap:14px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--signal); color:#fff; padding:16px 30px; border-radius:3px;
+    font-size:14px; font-weight:500; border:1px solid var(--signal); transition:all .2s ease;
+    display:inline-flex; align-items:center; gap:10px;
+  }
+  .btn-primary:hover{background:#1e46e0;}
+  .btn-outline{
+    padding:16px 26px; border-radius:3px; font-size:14px; border:1px solid var(--line);
+    transition:border-color .2s ease;
+  }
+  .btn-outline:hover{border-color:var(--ink);}
+  .trust-row{display:flex; gap:26px; margin-top:36px; flex-wrap:wrap;}
+  .trust-item{display:flex; align-items:center; gap:8px; font-size:12.5px; color:var(--muted);}
+  .trust-item svg{flex-shrink:0;}
+
+  /* hero visual with annotation callouts */
+  .hero-visual{position:relative;}
+  .product-frame{
+    position:relative; aspect-ratio:1/1; background:var(--panel);
+    border-radius:6px; border:1px solid var(--line); overflow:hidden;
+  }
+  .product-frame img{width:100%; height:100%; object-fit:cover;}
+  .callout{
+    position:absolute; display:flex; align-items:center; gap:10px;
+    font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--ink);
+  }
+  .callout .cline{width:38px; height:1px; background:var(--signal);}
+  .callout .clabel{
+    background:var(--panel); border:1px solid var(--line); padding:6px 10px; border-radius:3px;
+    white-space:nowrap;
+  }
+  .c1{top:14%; left:-4%; flex-direction:row-reverse;}
+  .c1 .clabel{order:1;}
+  .c2{top:44%; right:-8%;}
+  .c3{bottom:12%; left:-6%; flex-direction:row-reverse;}
+
+  /* SECTION SHELL */
+  section{padding:110px 0;}
+  .section-head{margin-bottom:56px; max-width:560px;}
+  .section-head h2{font-size:clamp(30px,3.6vw,42px); margin-top:14px;}
+  .section-head p{color:var(--muted); margin-top:14px; font-size:15.5px;}
+
+  /* FEATURES */
+  .features{background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .feature-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line);}
+  .feature-card{background:var(--panel); padding:34px 30px;}
+  .feature-num{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--signal);}
+  .feature-card h3{font-size:19px; margin:16px 0 10px;}
+  .feature-card p{font-size:14px; color:var(--muted);}
+
+  /* SPEC SHEET */
+  .specs .wrap{display:grid; grid-template-columns:0.9fr 1.1fr; gap:60px; align-items:start;}
+  .spec-visual{position:sticky; top:110px;}
+  .spec-visual img{border-radius:6px; border:1px solid var(--line);}
+  .spec-table{width:100%; border-collapse:collapse;}
+  .spec-table tr{border-bottom:1px solid var(--line);}
+  .spec-table td{padding:18px 0; font-size:14.5px;}
+  .spec-table td:first-child{color:var(--muted); font-family:'JetBrains Mono', monospace; font-size:12px; text-transform:uppercase; letter-spacing:0.04em; width:170px;}
+  .spec-table td:last-child{font-weight:500;}
+
+  /* COLOR SELECTOR */
+  .variants{background:var(--panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .variant-layout{display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center;}
+  .variant-preview{aspect-ratio:1/1; border-radius:6px; border:1px solid var(--line); overflow:hidden;}
+  .variant-preview img{width:100%; height:100%; object-fit:cover; transition:opacity .3s ease;}
+  .swatches{display:flex; gap:14px; margin-top:28px;}
+  .swatch{
+    width:42px; height:42px; border-radius:50%; border:2px solid transparent; cursor:pointer;
+    position:relative; transition:transform .2s ease;
+  }
+  .swatch.active{border-color:var(--ink); transform:scale(1.1);}
+  .swatch[data-c="graphite"]{background:#3B3E42;}
+  .swatch[data-c="silver"]{background:#C7CBD1;}
+  .swatch[data-c="copper"]{background:var(--copper);}
+  .variant-name{font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--muted); margin-top:16px;}
+
+  /* REVIEWS */
+  .rating-summary{display:flex; align-items:center; gap:26px; margin-bottom:50px; flex-wrap:wrap;}
+  .rating-big{font-family:'Space Grotesk', sans-serif; font-size:56px; font-weight:700;}
+  .stars{color:var(--copper); font-size:18px; letter-spacing:2px;}
+  .rating-count{font-size:13px; color:var(--muted);}
+  .review-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .review-card{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:26px;}
+  .review-card .stars{font-size:14px; margin-bottom:14px; display:block;}
+  .review-card p{font-size:14px; color:#3a3d41; margin-bottom:16px;}
+  .review-author{font-family:'JetBrains Mono', monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em;}
+
+  /* FAQ */
+  .faq{background:var(--panel); border-top:1px solid var(--line);}
+  .faq-list{max-width:720px;}
+  .faq-item{border-bottom:1px solid var(--line);}
+  .faq-q{
+    display:flex; justify-content:space-between; align-items:center; padding:22px 0;
+    cursor:pointer; font-size:15.5px; font-weight:500;
+  }
+  .faq-q .icon{font-family:'JetBrains Mono', monospace; color:var(--signal); font-size:18px; transition:transform .25s ease;}
+  .faq-item.open .icon{transform:rotate(45deg);}
+  .faq-a{max-height:0; overflow:hidden; transition:max-height .3s ease;}
+  .faq-a p{padding-bottom:22px; font-size:14.5px; color:var(--muted); max-width:600px;}
+
+  /* FOOTER */
+  footer{background:var(--ink); color:#e8e9ea; padding:80px 0 30px;}
+  .foot-grid{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; padding-bottom:56px; border-bottom:1px solid rgba(255,255,255,0.1);}
+  footer .logo{color:#fff;}
+  footer .foot-lede{color:#9a9da2; font-size:13.5px; margin-top:14px; max-width:260px;}
+  .foot-col h4{font-family:'JetBrains Mono', monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:#9a9da2; margin-bottom:18px;}
+  .foot-col a{display:block; font-size:13.5px; color:#c9cbce; margin-bottom:12px;}
+  .foot-col a:hover{color:#fff;}
+  .foot-bottom{display:flex; justify-content:space-between; align-items:center; padding-top:26px; font-size:12px; color:#7d8085; flex-wrap:wrap; gap:12px;}
+
+  /* STICKY ADD-TO-CART BAR */
+  .sticky-bar{
+    position:fixed; bottom:0; left:0; right:0; z-index:150;
+    background:var(--panel); border-top:1px solid var(--line);
+    padding:16px 0; transform:translateY(100%); transition:transform .3s ease;
+    box-shadow:0 -10px 30px rgba(0,0,0,0.06);
+  }
+  .sticky-bar.show{transform:translateY(0);}
+  .sticky-bar .wrap{display:flex; align-items:center; justify-content:space-between; gap:20px;}
+  .sticky-info{display:flex; align-items:center; gap:14px;}
+  .sticky-info img{width:44px; height:44px; object-fit:cover; border-radius:4px;}
+  .sticky-info .name{font-size:14px; font-weight:500;}
+  .sticky-info .price{font-family:'JetBrains Mono', monospace; font-size:13px; color:var(--muted);}
+
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  @media (prefers-reduced-motion: reduce){ .reveal{opacity:1; transform:none; transition:none;} }
+
+  @media (max-width:980px){
+    .hero .wrap{grid-template-columns:1fr;}
+    .hero-visual{max-width:440px; margin:0 auto;}
+    .callout{position:static; display:inline-flex; margin:6px 10px 6px 0;}
+    .feature-grid{grid-template-columns:1fr;}
+    .specs .wrap{grid-template-columns:1fr;}
+    .spec-visual{position:static;}
+    .variant-layout{grid-template-columns:1fr; text-align:center;}
+    .swatches{justify-content:center;}
+    .review-grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr; gap:34px;}
+  }
+  @media (max-width:680px){
+    .nav-links{
+      position:fixed; top:0; right:0; height:100vh; width:70%; background:var(--panel);
+      flex-direction:column; justify-content:center; padding:40px; gap:22px;
+      transform:translateX(100%); transition:transform .3s ease; box-shadow:-10px 0 30px rgba(0,0,0,0.1);
+    }
+    .nav-links.open{transform:translateX(0);}
+    .burger{display:flex;}
+    .nav-price, .nav-cta{display:none;}
+    section{padding:76px 0;}
+    .foot-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header id="siteHeader">
+  <nav class="wrap">
+    <a href="#home" class="logo"><span class="dot"></span>AETHER</a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#specs">Specs</a></li>
+      <li><a href="#colors">Colors</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <div class="nav-right">
+      <span class="nav-price mono">₹6,999</span>
+      <a href="#buy" class="nav-cta">Add to Cart</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="wrap">
+    <div class="hero-copy">
+      <div class="eyebrow">Adaptive ANC · 32HR Battery</div>
+      <h1>Hear everything.<br>Hear <span>nothing</span> you don't want to.</h1>
+      <p class="lede">Aether Pro pairs studio-grade sound with adaptive noise cancellation that adjusts to your environment in real time — not a preset, a response.</p>
+      <div class="price-row">
+        <span class="price-now mono">₹6,999</span>
+        <span class="price-was mono">₹9,499</span>
+        <span class="save-tag">Save 26%</span>
+      </div>
+      <div class="hero-actions">
+        <a href="#buy" class="btn-primary">Add to Cart — ₹6,999</a>
+        <a href="#specs" class="btn-outline">View Specs</a>
+      </div>
+      <div class="trust-row">
+        <div class="trust-item">✓ 2-Year Warranty</div>
+        <div class="trust-item">✓ Free Shipping</div>
+        <div class="trust-item">✓ 30-Day Returns</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="product-frame">
+        <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=1200&auto=format&fit=crop" alt="Aether Pro wireless earbuds in charging case">
+      </div>
+      <div class="callout c1"><span class="cline"></span><span class="clabel">Adaptive ANC — 4 mic array</span></div>
+      <div class="callout c2"><span class="cline"></span><span class="clabel">32hr total battery life</span></div>
+      <div class="callout c3"><span class="cline"></span><span class="clabel">IPX5 sweat &amp; splash resistant</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Engineered for Focus</div>
+      <h2>Built around how you actually listen.</h2>
+      <p>Every spec was chosen to solve one problem: noise that doesn't respect your time.</p>
+    </div>
+    <div class="feature-grid reveal">
+      <div class="feature-card">
+        <div class="feature-num mono">01</div>
+        <h3>Adaptive ANC</h3>
+        <p>Continuously samples ambient sound 200x/sec and adjusts cancellation depth — office chatter or airplane hum, handled differently.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num mono">02</div>
+        <h3>32-Hour Battery</h3>
+        <p>8 hours per charge, 24 more in the case. A 10-minute quick charge gets you 2 hours of playback.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num mono">03</div>
+        <h3>Spatial Audio</h3>
+        <p>Dynamic head tracking keeps sound anchored in space, even as you move — built for calls as much as music.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num mono">04</div>
+        <h3>Wireless Charging</h3>
+        <p>Drop the case on any Qi pad. No cable hunting, no dead battery surprises.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num mono">05</div>
+        <h3>Touch Controls</h3>
+        <p>Custom gestures for play, skip, and ANC toggle — configurable per ear, per app.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num mono">06</div>
+        <h3>IPX5 Rated</h3>
+        <p>Sweat, rain, and splashes are a non-issue. Built for runs, not just desks.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="specs" id="specs">
+  <div class="wrap">
+    <div class="spec-visual reveal">
+      <div class="eyebrow">Spec Sheet</div>
+      <h2 style="margin:16px 0 26px; font-size:clamp(28px,3.4vw,38px);">The numbers, honestly.</h2>
+      <img src="https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?q=80&w=900&auto=format&fit=crop" alt="Aether Pro earbud close-up detail">
+    </div>
+    <table class="spec-table reveal">
+      <tr><td>Driver</td><td>11mm dynamic, titanium-coated diaphragm</td></tr>
+      <tr><td>ANC Depth</td><td>Up to 38dB adaptive noise reduction</td></tr>
+      <tr><td>Battery (Buds)</td><td>8 hours playback, ANC on</td></tr>
+      <tr><td>Battery (Case)</td><td>24 additional hours, wireless charging</td></tr>
+      <tr><td>Connectivity</td><td>Bluetooth 5.3, multipoint (2 devices)</td></tr>
+      <tr><td>Water Resistance</td><td>IPX5 (buds), IPX4 (case)</td></tr>
+      <tr><td>Weight</td><td>4.8g per bud, 42g case</td></tr>
+      <tr><td>Codec Support</td><td>AAC, SBC, LDAC</td></tr>
+      <tr><td>In the Box</td><td>Earbuds, case, 3 ear-tip sizes, USB-C cable</td></tr>
+    </table>
+  </div>
+</section>
+
+<section class="variants" id="colors">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin:0 auto 50px; text-align:center; max-width:520px;">
+      <div class="eyebrow" style="justify-content:center;">Choose Your Finish</div>
+      <h2>Three colors. Same sound.</h2>
+    </div>
+    <div class="variant-layout reveal">
+      <div class="variant-preview">
+        <img id="variantImg" src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=1200&auto=format&fit=crop" alt="Aether Pro in selected color">
+      </div>
+      <div>
+        <h3 id="variantName" style="font-size:24px;">Graphite</h3>
+        <p style="color:var(--muted); margin-top:10px; max-width:340px;">Matte-finish polymer shell, resistant to fingerprints and scuffs.</p>
+        <div class="swatches">
+          <button class="swatch active" data-c="graphite" aria-label="Graphite"></button>
+          <button class="swatch" data-c="silver" aria-label="Silver"></button>
+          <button class="swatch" data-c="copper" aria-label="Copper"></button>
+        </div>
+        <div class="variant-name mono" id="variantStock">In stock — ships in 2 days</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reviews" id="reviews">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Customer Reviews</div>
+      <h2>What people actually say.</h2>
+    </div>
+    <div class="rating-summary reveal">
+      <div class="rating-big">4.7</div>
+      <div>
+        <div class="stars">★★★★★</div>
+        <div class="rating-count">Based on 1,204 verified reviews</div>
+      </div>
+    </div>
+    <div class="review-grid reveal">
+      <div class="review-card">
+        <span class="stars">★★★★★</span>
+        <p>The ANC genuinely adapts — I noticed it dial up automatically the second the train got loud. Didn't expect that.</p>
+        <div class="review-author">— Rohan K., Verified Buyer</div>
+      </div>
+      <div class="review-card">
+        <span class="stars">★★★★★</span>
+        <p>Battery life claims are accurate for once. I've gone 4 days on a single case charge with moderate use.</p>
+        <div class="review-author">— Ananya D., Verified Buyer</div>
+      </div>
+      <div class="review-card">
+        <span class="stars">★★★★☆</span>
+        <p>Sound is excellent, touch controls took a day to get used to. Worth it for the ANC alone.</p>
+        <div class="review-author">— Karan S., Verified Buyer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Questions</div>
+      <h2>Before you buy.</h2>
+    </div>
+    <div class="faq-list reveal">
+      <div class="faq-item">
+        <div class="faq-q">Do these work with both iPhone and Android?<span class="icon">+</span></div>
+        <div class="faq-a"><p>Yes — full feature support on both, including ANC, touch controls, and multipoint pairing via the Aether companion app.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What's covered under the 2-year warranty?<span class="icon">+</span></div>
+        <div class="faq-a"><p>Manufacturing defects in the buds, case, and battery. Battery capacity below 80% within the period is also covered.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Can I use just one earbud at a time?<span class="icon">+</span></div>
+        <div class="faq-a"><p>Yes, mono mode is supported for calls or single-ear listening — either bud works independently.</p></div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How long does shipping take?<span class="icon">+</span></div>
+        <div class="faq-a"><p>2–4 business days for most locations, with free tracked shipping on every order.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="buy" style="padding-top:0;">
+  <div class="wrap" style="text-align:center;">
+    <a href="#" class="btn-primary" style="justify-content:center; padding:18px 44px; font-size:15px;">Add to Cart — ₹6,999</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <a href="#home" class="logo"><span class="dot"></span>AETHER</a>
+        <p class="foot-lede">Precision audio, engineered for how you actually move through your day.</p>
+      </div>
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#features">Features</a>
+        <a href="#specs">Specifications</a>
+        <a href="#colors">Colors</a>
+      </div>
+      <div class="foot-col">
+        <h4>Support</h4>
+        <a href="#faq">FAQ</a>
+        <a href="#">Warranty</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="foot-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Reviews</a>
+        <a href="#">Shipping Policy</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Aether Audio. All rights reserved.</span>
+      <span class="mono">Made for people who hate noise.</span>
+    </div>
+  </div>
+</footer>
+
+<div class="sticky-bar" id="stickyBar">
+  <div class="wrap">
+    <div class="sticky-info">
+      <img src="https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=200&auto=format&fit=crop" alt="Aether Pro thumbnail">
+      <div>
+        <div class="name">Aether Pro Earbuds</div>
+        <div class="price mono">₹6,999</div>
+      </div>
+    </div>
+    <a href="#buy" class="btn-primary">Add to Cart</a>
+  </div>
+</div>
+
+<script>
+  const header = document.getElementById('siteHeader');
+  const stickyBar = document.getElementById('stickyBar');
+  const hero = document.querySelector('.hero');
+  window.addEventListener('scroll', () => {
+    header.classList.toggle('scrolled', window.scrollY > 30);
+    const heroBottom = hero.offsetTop + hero.offsetHeight;
+    stickyBar.classList.toggle('show', window.scrollY > heroBottom);
+  });
+
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => io.observe(el));
+
+  // color variant switch
+  const variants = {
+    graphite: { name: 'Graphite', desc: 'Matte-finish polymer shell, resistant to fingerprints and scuffs.', img: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?q=80&w=1200&auto=format&fit=crop', stock: 'In stock — ships in 2 days' },
+    silver:   { name: 'Silver', desc: 'Brushed aluminum-tone finish with a cooler, reflective look.', img: 'https://images.unsplash.com/photo-1590658165737-15a047b7c7b7?q=80&w=1200&auto=format&fit=crop', stock: 'In stock — ships in 2 days' },
+    copper:   { name: 'Copper', desc: 'Warm anodized tone, a standout finish for a subtle accent.', img: 'https://images.unsplash.com/photo-1583394838336-acd977736f90?q=80&w=1200&auto=format&fit=crop', stock: 'Low stock — 6 left' }
+  };
+  const swatchBtns = document.querySelectorAll('.swatch');
+  const variantImg = document.getElementById('variantImg');
+  const variantName = document.getElementById('variantName');
+  const variantStock = document.getElementById('variantStock');
+  swatchBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      swatchBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const v = variants[btn.dataset.c];
+      variantImg.style.opacity = 0;
+      setTimeout(() => {
+        variantImg.src = v.img;
+        variantImg.style.opacity = 1;
+      }, 150);
+      variantName.textContent = v.name;
+      variantName.nextElementSibling.textContent = v.desc;
+      variantStock.textContent = v.stock;
+    });
+  });
+
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    const q = item.querySelector('.faq-q');
+    const a = item.querySelector('.faq-a');
+    q.addEventListener('click', () => {
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => { i.classList.remove('open'); i.querySelector('.faq-a').style.maxHeight = null; });
+      if (!isOpen) {
+        item.classList.add('open');
+        a.style.maxHeight = a.scrollHeight + 'px';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
